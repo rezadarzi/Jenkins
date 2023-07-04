@@ -1,1 +1,20 @@
+stage ('kubernetes deployment and service starts') {
+            steps {
+                echo "kubernetes deployment is starting."
+                withKubeConfig ([credentialsId: 'kubernetes config credential', serverUrl: 'loadbalancer:6443'])
+                {
+                    sh (script:"/...DeploymentHandling.sh")
+                }
+            }
+        }
 
+    post {
+        success {
+            echo "Build successful."
+            sh "rm -f single?json*"
+        }
+        failure {	
+            echo "Build is NOT successful."
+            sh "rm -f single?json*"
+        }
+    }
